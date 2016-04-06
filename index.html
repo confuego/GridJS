@@ -9,7 +9,9 @@
 		table {
 			border:  solid 1px black;
 			border-collapse: collapse;
-			background-color: #AFCFEF
+			background-color: #AFCFEF;
+			text-align: center;
+			width:100%;
 		}
 
 		th {
@@ -55,7 +57,9 @@
 			border-radius: 2px;
 			border: solid 2px rgba(0,0,0,0.75);
 			border-collapse:collapse;
-			margin: 10px 2px;
+			margin: 10px 0px;
+			width:100%;
+			box-sizing: border-box;
 		}
 
 		#btnGrp > *{
@@ -99,12 +103,12 @@
 				<label id = "btnGrpTitle" >Grid Operations:</label>
 				<button id="change" onclick="g.Refresh();">Delete Rows</button>
 				<button id="addRow" onclick="g.AddRow();">Add New Row</button>
-				<input id="ImportCSV" type = "file" onchange="g.Import(this.files)">
+				<input id="ImportCSV" type = "file" onchange="g.Import(this.files)"/>
 				
 				<form id="DownloadForm" onsubmit="g.Download(this['FileName'].value);">
 					<label id="FileNameLabel">File Name:</label>
-					<input type ="text" name="FileName" value = "">
-					<input type = "submit" value = "Download CSV">
+					<input type ="file" name="FileName" directory/>
+					<input type = "submit" value = "Download CSV"/>
 				</form>
 			</div>
 		</div>
