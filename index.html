@@ -1,0 +1,24 @@
+<html>
+	<body>
+		<div id="section">
+			<div id="Grid">
+			</div>
+			<script type="text/javascript" src = "Grid.js"></script>
+			<script type="text/javascript">
+				var g = new Grid(
+					[
+						{UserID: 1,FirstName:"Wes", LastName: "Chappell"},
+						{UserID: 2,FirstName:"Tom", LastName: "Krcmar"},
+						{UserID: 3,FirstName: "Nanditha", LastName: "Pamal"}
+					],
+					"Grid",
+					[{Column: "UserID", Visible: false},{Column: "FirstName", Visible: true},{Column: "LastName",Visible:true}]
+				);
+			</script>
+
+			<button id="change" onclick="g.Refresh()">Update Grid</button>
+			<button id="addRow" onclick="g.AddRow()">Add New Row</button>
+			<input id="ImportCSV" type = "file" onchange="g.Import(this.files)" accept = ".txt"></input> 
+		</div>
+	</body>
+</html
