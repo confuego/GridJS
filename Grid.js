@@ -26,9 +26,17 @@ Grid.prototype = {
     ModelMap: [],
     Columns: {},
     VisibleColumns: [],
-    Download:function() {
+    Download:function(FileName) {
         var models = this.Model();
-        var CSV = "data:text/csv;charset=utf-8,";
+        var CSV = "data:text/plain;charset=utf-8,";
+
+        for(col in this.Columns) {
+            if(this.Columns[col].Visible)
+                CSV += (col + ",");
+        }
+        CSV = CSV.substring(0,CSV.length -1);
+        CSV += "\r\n";
+
 
         for (var idx = 0; idx < models.length; idx++) {
 
@@ -39,8 +47,14 @@ Grid.prototype = {
             CSV = CSV.substring(0, CSV.length - 1);
             CSV += "\r\n";
         }
-
-        window.open(encodeURI(CSV));
+        var download = document.createElement('a');
+        download.setAttribute('href',encodeURI(CSV));
+        download.setAttribute('download',FileName);
+        download.style.display = 'none';
+        document.body.appendChild(download);
+        download.click();
+        document.body.removeChild(download);
+        //window.open(encodeURI(CSV));
 
     },
     Import: function(file) {
@@ -54,7 +68,7 @@ Grid.prototype = {
 				var txt_columns = allTextLines[0].split(',');
 
                 for(var col = 0; col < txt_columns.length; col++) {
-                	if(this.Columns[txt_columns[col]] == undefined) {
+                	if(this.Columns[txt_columns[col].trim()] == undefined) {
                 		alert("Column in CSV does not exist in model!");
                 		return;
                 	}
@@ -69,7 +83,7 @@ Grid.prototype = {
 						var data_count = 0;
 
 						txt_columns.forEach(function(colName) {
-							KVP[colName] =  data[data_count];
+							KVP[colName] =  data[data_count].trim();
 							data_count++;
 						});
 
