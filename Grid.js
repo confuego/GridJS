@@ -27,7 +27,10 @@ Grid.prototype = {
     },
     Download:function(FileName) {
         var models = this.Model();
-        var CSV = "data:text/plain;charset=utf-8,";
+        var CSV = "";
+
+        if(FileName.value == undefined || FileName.value == null || FileName.value == "")
+            FileName = "Grid.csv";
 
         for(col in this.Columns) {
             if(this.Columns[col].Visible)
@@ -46,14 +49,15 @@ Grid.prototype = {
             CSV = CSV.substring(0, CSV.length - 1);
             CSV += "\r\n";
         }
+
         var download = document.createElement('a');
-        download.setAttribute('href',encodeURI(CSV));
-        download.setAttribute('download',FileName);
+        //download.setAttribute('href',"data:text/plain;charset=utf-8,"+encodeURIComponent(CSV));
+        download.setAttribute('href', window.URL.createObjectURL(new Blob([CSV], {type: 'text/csv'})));
+        download.setAttribute('download', FileName);
         download.style.display = 'none';
         document.body.appendChild(download);
         download.click();
         document.body.removeChild(download);
-
     },
     Import: function(file) {
         if(window.FileReader) {
@@ -62,7 +66,7 @@ Grid.prototype = {
             if(file[0] == null || file[0] == undefined || file[0] == "") {
                     return;
             }
-            
+
         	reader.readAsText(file[0]);
 
         	reader.onload = function (e) {
@@ -164,7 +168,6 @@ Grid.prototype = {
         }.bind(mapping));
 
         this.TableElement.appendChild(tr);
-
     },
     Refresh: function () {
 
@@ -177,7 +180,6 @@ Grid.prototype = {
                 m--;
             }
         }
-
     },
     GridBuilder: function (Model) {
 

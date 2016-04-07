@@ -11,11 +11,12 @@
 		<title> User List Grid </title>
 	</head>
 	<body>
-		<div id="section" class = "section">
+		<div class = "section">
 			<div id="Grid">
 			</div>
 			<script type="text/javascript" src = "Grid.js"></script>
 			<script type="text/javascript">
+
 				var g = new Grid(
 					[
 						{UserID: 1,FirstName:"Wes", LastName: "Chappell"},
@@ -24,21 +25,22 @@
 					],
 					"Grid",
 					[{Column: "UserID", Visible: false},{Column: "FirstName", Visible: true},{Column: "LastName", Visible:true}],
-					{Row: "",Input: "input",Header:"th",Table: "table wide", CheckBox: "large-checkbox"}
+					{Row: "",Input: "",Header:"th-grid",Table: "grid-table wide", CheckBox: "large-checkbox"}
 				);
+
 			</script>
 
-			<div id = "btnGrp" class = "btnGrp wide">
-				<label id = "btnGrpTitle" class ="label">Grid Operations:</label>
-				<button id="change" onclick="g.Refresh();" class = "button">Delete Rows</button>
-				<button id="addRow" onclick="g.AddRow();" class = "button">Add New Row</button>
-				<input id="ImportCSV" type = "file" onchange="g.Import(this.files)" class= "input">
-				
-				<form id="DownloadForm" onsubmit="g.Download(this['FileName'].value);" class= "DownloadForm">
-					<label id="FileNameLabel">File Name:</label>
-					<input type ="text" name="FileName" value = "" class="input">
-					<input type = "submit" value = "Download CSV" class= "input">
-				</form>
+			<div class = "btnGrp wide">
+				<label id="btnGrpTitle">Grid Operations:</label>
+				<button id="change" onclick="g.Refresh();">Delete Rows</button>
+				<button id="addRow" onclick="g.AddRow();">Add New Row</button>
+				<input id="ImportCSV" type = "file" onchange="g.Import(this.files)" />
+
+				<div class="DownloadForm">
+					<label>File Name:</label>
+					<input type="text" id="FileName" value="">
+					<input type="submit" value="Download CSV" id="DownloadBtn" onclick = "g.Download(document.getElementById('FileName'))">
+				</div>
 			</div>
 		</div>
 	</body>
