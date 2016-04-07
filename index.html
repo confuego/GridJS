@@ -1,79 +1,17 @@
 <!DOCTYPE html>
 <html>
-	<style>
-		body {
-			font-family:  Helvetica;
-			font-size:  18px;
-		}
-		table {
-			border:  solid 1px black;
-			border-collapse: collapse;
-			background-color: #AFCFEF;
-			text-align: center;
-			width:100%;
-		}
-		th {
-			color: white;
-			background-color: rgba(0,0,0,0.375);
-		}
-		th, td {padding: 4px;}
-		table > tr:nth-child(even) {
-			background-color: rgba(0,0,0,0.125);
-		}
-		input {
-			border-radius:4px;
-			border: solid 1px rgba(0,0,0,0.5);
-			padding: 2px 6px;
-			background-color: rgba(255, 255, 255, 0.75);
-			transition: all 0.25s ease;
-		}
-		input:focus {
-			background-color: rgba(255, 255, 255, 1);
-		}
-		button {
-			border-radius:4px;
-			border: solid 1px rgba(0,0,0,0.5);
-			padding: 2px 6px;
-			background-color: rgba(255, 255, 255, 0.75);
-			transition: all 0.25s ease;
-		}
-		button:focus {
-			background-color: rgba(255, 255, 255, 1);
-		}
-		#section {
-			display: inline-block;
-		}
-		#btnGrp {
-			padding: 2px;
-			border-radius: 2px;
-			border: solid 2px rgba(0,0,0,0.75);
-			border-collapse:collapse;
-			margin: 10px 0px;
-			width:100%;
-			box-sizing: border-box;
-		}
-		#btnGrp > *{
-			padding: 2px 6px;
-			border-radius: 50px;
-			margin: 2px 2px;
-		}
-		label {
-			display:block;
-		    font-size: medium;
-		    margin: 5px 2px;
-		    text-align: center;
-		}
-		#DownloadForm > label {
-			text-align: left;
-			display: inline-block;
-		}
-
-
-
-	</style>
-	<title> User List Grid </title>
+	<head>
+		<link rel = "stylesheet" type = "text/css" href = "Grid.css" >
+		<style>
+			body {
+				font-family:  Helvetica;
+				font-size:  18px;
+			}
+		</style>
+		<title> User List Grid </title>
+	</head>
 	<body>
-		<div id="section">
+		<div id="section" class = "section">
 			<div id="Grid">
 			</div>
 			<script type="text/javascript" src = "Grid.js"></script>
@@ -85,20 +23,21 @@
 						{UserID: 3,FirstName: "Nanditha", LastName: "Pamal"}
 					],
 					"Grid",
-					[{Column: "UserID", Visible: false},{Column: "FirstName", Visible: true},{Column: "LastName",Visible:true}]
+					[{Column: "UserID", Visible: false},{Column: "FirstName", Visible: true},{Column: "LastName", Visible:true}],
+					{Row: "",Input: "input",Header:"th",Table: "table wide", CheckBox: "large-checkbox"}
 				);
 			</script>
 
-			<div id = "btnGrp" >
-				<label id = "btnGrpTitle" >Grid Operations:</label>
-				<button id="change" onclick="g.Refresh();">Delete Rows</button>
-				<button id="addRow" onclick="g.AddRow();">Add New Row</button>
-				<input id="ImportCSV" type = "file" onchange="g.Import(this.files)">
+			<div id = "btnGrp" class = "btnGrp wide">
+				<label id = "btnGrpTitle" class ="label">Grid Operations:</label>
+				<button id="change" onclick="g.Refresh();" class = "button">Delete Rows</button>
+				<button id="addRow" onclick="g.AddRow();" class = "button">Add New Row</button>
+				<input id="ImportCSV" type = "file" onchange="g.Import(this.files)" class= "input">
 				
-				<form id="DownloadForm" onsubmit="g.Download(this['FileName'].value);">
+				<form id="DownloadForm" onsubmit="g.Download(this['FileName'].value);" class= "DownloadForm">
 					<label id="FileNameLabel">File Name:</label>
-					<input type ="text" name="FileName" value = "">
-					<input type = "submit" value = "Download CSV">
+					<input type ="text" name="FileName" value = "" class="input">
+					<input type = "submit" value = "Download CSV" class= "input">
 				</form>
 			</div>
 		</div>

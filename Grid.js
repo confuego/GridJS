@@ -1,19 +1,23 @@
 ﻿function Grid() {
-    if (arguments.length >= 2) {
-        if (arguments.length >= 3) {
+    if (arguments.length >= 4) {
 
-            arguments[2].forEach(function(col) {
-            	this.Columns[col.Column] = col;
-            }.bind(this));
+        arguments[2].forEach(function(col) {
+        	this.Columns[col.Column] = col;
+        }.bind(this));
 
-
-        }
         this.DIV = document.getElementById(arguments[1]);
+        this.Styling = arguments[3];
         this.GridBuilder(arguments[0]);
     }
 }
 
 Grid.prototype = {
+    TableElement: undefined,
+    DIV: undefined,
+    ModelMap: [],
+    Columns: {},
+    VisibleColumns: [],
+    Styling: {},
     Model: function(){
         var ModelArray = [];
         this.ModelMap.forEach(function(val){
@@ -21,11 +25,6 @@ Grid.prototype = {
         });
         return ModelArray; 
     },
-    TableElement: undefined,
-    DIV: undefined,
-    ModelMap: [],
-    Columns: {},
-    VisibleColumns: [],
     Download:function(FileName) {
         var models = this.Model();
         var CSV = "data:text/plain;charset=utf-8,";
@@ -54,7 +53,6 @@ Grid.prototype = {
         document.body.appendChild(download);
         download.click();
         document.body.removeChild(download);
-        //window.open(encodeURI(CSV));
 
     },
     Import: function(file) {
@@ -122,6 +120,7 @@ Grid.prototype = {
                 input.type = "Text";
                 input.value = (newModel[prop] != undefined)? newModel[prop] : "";
                 input.name = prop;
+                input.className += this.Styling.Input;
 
                 td.appendChild(input);
                 tr.appendChild(td);
@@ -132,17 +131,19 @@ Grid.prototype = {
         }
 
         var td = document.createElement("td");
-        var checkbox = document.createElement("input");
 
-        checkbox.type = "checkbox";
-        td.appendChild(checkbox);
+        var del = document.createElement("input");
+        del.type = "checkbox";
+        del.className += this.Styling.CheckBox;
+
+        td.appendChild(del);
         tr.appendChild(td);
 
         var mapping = {
             HTMLRow: tr,
             Model: newModel,
             remove: false,
-            DeleteElement: checkbox
+            DeleteElement: del
         };
 
         this.ModelMap.push(mapping);
@@ -176,19 +177,23 @@ Grid.prototype = {
     GridBuilder: function (Model) {
 
         this.TableElement = document.createElement("table");
+        this.TableElement.className += this.Styling.Table;
 
         var header = document.createElement("tr");
         var cell_count = 0;
         for (var col in this.Columns) {
             if (this.Columns[col].Visible) {
                 var th = document.createElement("th");
+                th.className += this.Styling.Header;
                 header.appendChild(th);
                 header.cells[cell_count].appendChild(document.createTextNode(col));
                 cell_count++;
             }
         }
+        var deleteHeader = document.createElement("th");
+        deleteHeader.className += this.Styling.Header;
+        header.appendChild(deleteHeader);
 
-        header.appendChild(document.createElement("th"));
         header.cells[cell_count].appendChild(document.createTextNode("Delete"));
 
         this.TableElement.appendChild(header);
@@ -196,6 +201,7 @@ Grid.prototype = {
 
         for (var x = 0; x < Model.length; x++) {
             var row = document.createElement("tr");
+            row.className += this.Styling.Row;
             var cell_count = 0;
 
             for (var col in this.Columns) {
@@ -205,6 +211,7 @@ Grid.prototype = {
                     row.appendChild(td);
 
                     var input = document.createElement("input");
+                    input.className += this.Styling.Input;
                     input.value = Model[x][col];
                     input.type = "Text";
                     input.name = col;
@@ -215,6 +222,7 @@ Grid.prototype = {
             }
 
             var del = document.createElement("input");
+            del.className += this.Styling.CheckBox;
             del.type = "checkbox";
 
             row.appendChild(document.createElement("td"));
