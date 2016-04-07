@@ -58,6 +58,11 @@ Grid.prototype = {
     Import: function(file) {
         if(window.FileReader) {
         	var reader = new FileReader();
+
+            if(file[0] == null || file[0] == undefined || file[0] == "") {
+                    return;
+            }
+            
         	reader.readAsText(file[0]);
 
         	reader.onload = function (e) {
