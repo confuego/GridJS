@@ -1,6 +1,6 @@
 ﻿function Grid() {
     if (arguments.length >= 3) {
-        
+
         if(arguments.length >= 4)
             this.Styling = arguments[3];
 
@@ -31,7 +31,7 @@ Grid.prototype = {
         var models = this.Model();
         var CSV = "";
 
-        if(FileName.value == undefined || FileName.value == null || FileName.value == "")
+        if(FileName == undefined || FileName == null || FileName == "")
             FileName = "Grid.csv";
 
         for(col in this.Columns) {
