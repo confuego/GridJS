@@ -130,7 +130,7 @@ Grid.prototype = {
                 input.type = "Text";
                 input.value = (newModel[prop] != undefined)? newModel[prop] : "";
                 input.name = prop;
-                input.className += this.Styling.Input;
+                input.className += " " + this.Styling.Input;
 
                 td.appendChild(input);
                 tr.appendChild(td);
@@ -185,7 +185,7 @@ Grid.prototype = {
     GridBuilder: function (Model) {
 
         this.TableElement = document.createElement("table");
-        this.TableElement.className += this.Styling.Table;
+        this.TableElement.className += " "  + this.Styling.Table;
 
         var header = document.createElement("tr");
         var cell_count = 0;
@@ -219,7 +219,7 @@ Grid.prototype = {
                     row.appendChild(td);
 
                     var input = document.createElement("input");
-                    input.className += this.Styling.Input;
+                    input.className += " " + this.Styling.Input;
                     input.value = Model[x][col];
                     input.type = "Text";
                     input.name = col;
@@ -230,7 +230,7 @@ Grid.prototype = {
             }
 
             var del = document.createElement("input");
-            del.className += this.Styling.CheckBox;
+            del.className += " " + this.Styling.CheckBox;
             del.type = "checkbox";
 
             row.appendChild(document.createElement("td"));
