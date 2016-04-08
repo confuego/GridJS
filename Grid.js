@@ -1,12 +1,14 @@
 ﻿function Grid() {
-    if (arguments.length >= 4) {
+    if (arguments.length >= 3) {
+        
+        if(arguments.length >= 4)
+            this.Styling = arguments[3];
 
         arguments[2].forEach(function(col) {
         	this.Columns[col.Column] = col;
         }.bind(this));
 
         this.DIV = document.getElementById(arguments[1]);
-        this.Styling = arguments[3];
         this.GridBuilder(arguments[0]);
     }
 }
@@ -15,9 +17,9 @@ Grid.prototype = {
     TableElement: undefined,
     DIV: undefined,
     ModelMap: [],
-    Columns: {},
+    Columns: [{Column: undefined, Visible: undefined}],
     VisibleColumns: [],
-    Styling: {},
+    Styling: {Row: "",Input: "",Header:"",Table: "", CheckBox: ""},
     Model: function(){
         var ModelArray = [];
         this.ModelMap.forEach(function(val){
@@ -51,7 +53,6 @@ Grid.prototype = {
         }
 
         var download = document.createElement('a');
-        //download.setAttribute('href',"data:text/plain;charset=utf-8,"+encodeURIComponent(CSV));
         download.setAttribute('href', window.URL.createObjectURL(new Blob([CSV], {type: 'text/csv'})));
         download.setAttribute('download', FileName);
         download.style.display = 'none';
