@@ -8,18 +8,18 @@
         	this.Columns[col.Column] = col;
         }.bind(this));
 
-        this.DIV = document.getElementById(arguments[1]);
+        this.ContainerElement = document.getElementById(arguments[1]);
         this.GridBuilder(arguments[0]);
     }
 }
 
 Grid.prototype = {
     TableElement: undefined,
-    DIV: undefined,
+    ContainerElement: undefined,
     ModelMap: [],
-    Columns: [{Column: undefined, Visible: undefined}],
+    Columns: [],
     VisibleColumns: [],
-    Styling: {Row: "",Input: "",Header:"",Table: "", CheckBox: ""},
+    Styling: {Row: "",Cell: "",Header:"",Table: "", Delete: ""},
     Model: function(){
         var ModelArray = [];
         this.ModelMap.forEach(function(val){
@@ -117,58 +117,51 @@ Grid.prototype = {
     	if(arguments.length >= 1) {
     		ModelValues = arguments[0];
     	}
-        var tr = document.createElement("tr");
+        var row = document.createElement("tr");
+        row.className += this.Styling.Row;
         var newModel = {};
 
         for(var prop in this.Columns){
             if(this.Columns[prop].Visible) {
-                newModel[prop] = (ModelValues[prop] != undefined) ? ModelValues[prop] : undefined;
+                newModel[prop] = (ModelValues[prop]) ? ModelValues[prop] : undefined;
 
                 var td = document.createElement("td");
+                td.className += this.Styling.Cell;
 
-                var input = document.createElement("input");
-                input.type = "Text";
-                input.value = (newModel[prop] != undefined)? newModel[prop] : "";
-                input.name = prop;
-                input.className += " " + this.Styling.Input;
+                var input_label = document.createElement("label");
+                input_label.innerHTML = (newModel[prop])? newModel[prop] : "Please Insert Value..";
+                input_label.id = prop; 
 
-                td.appendChild(input);
-                tr.appendChild(td);
+                td.appendChild(input_label);
+                row.appendChild(td);
             }
             else if(!this.Columns[prop].Visible) {
-                newModel[prop] = undefined;
+                newModel[prop] = ModelValues[prop];
             }
         }
 
         var td = document.createElement("td");
+        td.className += this.Styling.Cell;
 
         var del = document.createElement("input");
         del.type = "checkbox";
-        del.className += this.Styling.CheckBox;
+        del.className += this.Styling.Delete;
 
+        row.appendChild(td);
         td.appendChild(del);
-        tr.appendChild(td);
 
         var mapping = {
-            HTMLRow: tr,
+        	HTMLRow: row,
             Model: newModel,
             remove: false,
-            DeleteElement: del
+            DeleteElement: del,
+            Styling: this.Styling.Cell
         };
 
         this.ModelMap.push(mapping);
+        this.AddRowEvent(mapping);
+        this.TableElement.appendChild(row);
 
-        tr.addEventListener("change", function (e) {
-        	var model = this.Model;
-                
-            if(e.target == this.DeleteElement) {
-                this.remove = this.DeleteElement.checked ? true : false;
-            }
-            else
-                this.Model[e.target.name] = e.target.value;
-        }.bind(mapping));
-
-        this.TableElement.appendChild(tr);
     },
     Refresh: function () {
 
@@ -185,24 +178,21 @@ Grid.prototype = {
     GridBuilder: function (Model) {
 
         this.TableElement = document.createElement("table");
-        this.TableElement.className += " "  + this.Styling.Table;
+        this.TableElement.className += this.Styling.Table;
 
         var header = document.createElement("tr");
-        var cell_count = 0;
         for (var col in this.Columns) {
             if (this.Columns[col].Visible) {
                 var th = document.createElement("th");
                 th.className += this.Styling.Header;
+                th.appendChild(document.createTextNode(col));
                 header.appendChild(th);
-                header.cells[cell_count].appendChild(document.createTextNode(col));
-                cell_count++;
             }
         }
         var deleteHeader = document.createElement("th");
         deleteHeader.className += this.Styling.Header;
+        deleteHeader.appendChild(document.createTextNode("Delete"));
         header.appendChild(deleteHeader);
-
-        header.cells[cell_count].appendChild(document.createTextNode("Delete"));
 
         this.TableElement.appendChild(header);
 
@@ -210,57 +200,46 @@ Grid.prototype = {
         for (var x = 0; x < Model.length; x++) {
             var row = document.createElement("tr");
             row.className += this.Styling.Row;
-            var cell_count = 0;
 
-            for (var col in this.Columns) {
-
-                if (this.Columns[col].Visible) {
-                    var td = document.createElement("td");
-                    row.appendChild(td);
-
-                    var input = document.createElement("input");
-                    input.className += " " + this.Styling.Input;
-                    input.value = Model[x][col];
-                    input.type = "Text";
-                    input.name = col;
-
-                    row.cells[cell_count].appendChild(input);
-                    cell_count++;
-                }
-            }
-
-            var del = document.createElement("input");
-            del.className += " " + this.Styling.CheckBox;
-            del.type = "checkbox";
-
-            row.appendChild(document.createElement("td"));
-            row.cells[cell_count].appendChild(del);
-
-            var mapping = {
-                HTMLRow: row,
-                Model: Model[x],
-                remove: false,
-                DeleteElement: del,
-            };
-
-            this.ModelMap.push(mapping);
-
-            this.TableElement.appendChild(row);
-
-            row.addEventListener("change", function (e) {
-                var model = this.Model;
-                
-                if(e.target == this.DeleteElement) {
-                	this.remove = this.DeleteElement.checked ? true : false;
-                }
-                else
-                	this.Model[e.target.name] = e.target.value;
-
-                
-            }.bind(mapping));
+            this.AddRow(Model[x]);
         }
 
-        this.DIV.appendChild(this.TableElement);
+
+        this.ContainerElement.appendChild(this.TableElement);
+    },
+    AddRowEvent: function(mapping) {
+		mapping.HTMLRow.addEventListener("click",function(e) {
+			if(!e.target.edit && this.DeleteElement != e.target && e.target.tagName.toLowerCase() == "label") {
+				var input = document.createElement("input");
+				input.type = "Text";
+				input.value = e.target.innerText;
+				input.name = e.target.id;
+				input.setAttribute('edit',true);
+
+				e.target.parentNode.replaceChild(input,e.target);
+				input.focus();
+
+				input.addEventListener("change", function(e) {
+					this.Model[e.target.name] = e.target.value;
+				}.bind(this));
+
+				input.addEventListener("blur", function(e) {
+					e.target.edit = false;
+
+					var input_label = document.createElement("label");
+					//input_label.className += this.Styling.Cell;
+					input_label.innerHTML = e.target.value;
+					input_label.id = e.target.id;
+
+					e.target.parentNode.replaceChild(input_label,e.target);
+
+				}.bind(this));
+			}
+		}.bind(mapping));
+
+		mapping.DeleteElement.addEventListener("change", function (e) {
+			this.remove = this.DeleteElement.checked ? true : false;
+		}.bind(mapping));
     }
 }
 
